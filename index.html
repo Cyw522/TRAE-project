@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>春娇与志明</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 粒子效果相关样式 */
+        .sparkle {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 1;
+        }
+        
+        .heart-particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 1;
+            font-size: 16px;
+        }
+        
+        /* 优化按钮交互的动画 */
+        @keyframes buttonPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 46, 99, 0.8);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(255, 46, 99, 1);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 46, 99, 0.8);
+            }
+        }
+        
+        #yes-button:hover {
+            animation: buttonPulse 1s ease-in-out infinite;
+        }
+        
+        /* 音乐控制按钮样式 */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 46, 99, 0.8);
+            border-radius: 50%;
+            display: none; /* 隐藏音乐控制按钮 */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 46, 99, 0.8);
+        }
+        
+        .music-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 46, 99, 1);
+        }
+        
+        .music-icon {
+            width: 20px;
+            height: 20px;
+            border-left: 8px solid #fff;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            margin-left: 3px;
+        }
+        
+        .music-icon.paused::before, .music-icon.paused::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 20px;
+            background-color: #fff;
+        }
+        
+        .music-icon.paused::before {
+            left: 18px;
+        }
+        
+        .music-icon.paused::after {
+            right: 18px;
+        }
+        
+        .music-icon.paused {
+            border: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 音乐播放元素 -->
+    <audio id="bg-music" loop>
+        <source src="春娇与志明.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 音乐控制按钮 -->
+    <div class="music-control">
+        <div class="music-icon"></div>
+    </div>
+    
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
+    
+    <!-- 主内容容器 -->
+    <div id="main-container" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #ff6b6b, #ff8e53, #feb47b);">
+        <!-- 心形动画区域 -->
+        <div id="heart-container" style="position: relative; display: flex; justify-content: center; align-items: center;">
+            <svg id="heart-svg" width="300" height="300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="fill: transparent; stroke-dasharray: 1000; stroke-dashoffset: 1000;">
+                </path>
+            </svg>
+            <div id="text-overlay" style="position: absolute; text-align: center; opacity: 0; transform: scale(0.8); transition: all 0.5s ease;">
+                <h1 style="color: white; font-family: 'Microsoft YaHei', sans-serif; font-size: 24px; margin-bottom: 10px;">阿常，做我女朋友好吗？</h1>
+                <p style="color: white; font-family: 'Microsoft YaHei', sans-serif; font-size: 16px;">我喜欢你很久了</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 按钮区域 -->
+    <div id="buttons-container" style="position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); display: flex; gap: 30px; opacity: 0; transition: opacity 1s ease;">
+        <button id="yes-button" style="padding: 15px 40px; font-size: 18px; background-color: #ff427f; color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 0 20px rgba(255, 46, 99, 0.8); transition: all 0.3s ease;">
+            可以
+        </button>
+        <button id="no-button" style="padding: 15px 40px; font-size: 18px; background-color: #666; color: white; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease;">
+            再考虑一下
+        </button>
+    </div>
+    
+    <!-- 订单表单弹窗 -->
+    <div id="order-form" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: white; border-radius: 20px; padding: 30px; width: 90%; max-width: 500px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);">
+            <h2 style="text-align: center; color: #ff427f; margin-bottom: 20px; font-family: 'Microsoft YaHei', sans-serif;">填写你的信息</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">地址</label>
+                <input type="text" id="address" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;" placeholder="请输入你的地址">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">手机号</label>
+                <input type="tel" id="phone" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;" placeholder="请输入你的手机号">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">想对阿常说的话</label>
+                <textarea id="message" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 100px; resize: vertical;" placeholder="想说点什么吗？"></textarea>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">幸运奖品</label>
+                <select id="prize" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; background-color: white;">
+                    <option value="爱情奶茶">爱情奶茶</option>
+                    <option value="真心巧克力">真心巧克力</option>
+                    <option value="幸福糖果">幸福糖果</option>
+                    <option value="浪漫鲜花">浪漫鲜花</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button id="submit-order" style="flex: 1; padding: 15px; font-size: 16px; background-color: #ff427f; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">确定</button>
+                <button id="cancel-order" style="flex: 1; padding: 15px; font-size: 16px; background-color: #666; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 数据展示面板 -->
+    <div id="data-panel" style="position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); z-index: 99; transition: all 0.3s ease;">
+        <span style="font-size: 20px; color: #ff427f;">📋</span>
+    </div>
+    
+    <!-- 数据展示弹窗 -->
+    <div id="data-display" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: white; border-radius: 20px; padding: 30px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #ff427f; font-family: 'Microsoft YaHei', sans-serif;">提交记录</h2>
+                <button id="close-data" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+            </div>
+            
+            <div id="data-list" style="font-family: 'Microsoft YaHei', sans-serif;">
+                <!-- 数据记录将在这里动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 心形绘制动画
+        const heartPath = document.querySelector('#heart-svg path');
+        const textOverlay = document.querySelector('#text-overlay');
+        const buttonsContainer = document.querySelector('#buttons-container');
+        
+        // 开始绘制心形
+        function drawHeart() {
+            let offset = 1000;
+            const interval = setInterval(() => {
+                offset -= 20;
+                heartPath.style.strokeDashoffset = offset;
+                
+                if (offset <= 0) {
+                    clearInterval(interval);
+                    // 心形绘制完成后填充颜色
+                    heartPath.style.fill = '#ff427f';
+                    // 显示文字和按钮
+                    setTimeout(() => {
+                        textOverlay.style.opacity = 1;
+                        textOverlay.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            buttonsContainer.style.opacity = 1;
+                        }, 500);
+                    }, 500);
+                }
+            }, 30);
+        }
+        
+        // 音乐控制功能
+        const bgMusic = document.getElementById('bg-music');
+        const musicControl = document.querySelector('.music-control');
+        const musicIcon = document.querySelector('.music-icon');
+        
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicIcon.classList.remove('paused');
+            } else {
+                bgMusic.pause();
+                musicIcon.classList.add('paused');
+            }
+        }
+        
+        musicControl.addEventListener('click', toggleMusic);
+        
+        // 尝试自动播放音乐
+        document.addEventListener('click', function startMusic() {
+            bgMusic.play().then(() => {
+                musicControl.style.display = 'flex';
+                document.removeEventListener('click', startMusic);
+            }).catch(error => {
+                console.log('无法自动播放音乐:', error);
+            });
+        }, { once: true });
+        
+        // 生成星星散落效果
+        function createSparkles(x, y) {
+            const container = document.body;
+            
+            for (let i = 0; i < 100; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                
+                // 随机大小
+                const size = Math.random() * 6 + 2;
+                sparkle.style.width = `${size}px`;
+                sparkle.style.height = `${size}px`;
+                
+                // 初始位置
+                sparkle.style.left = `${x}px`;
+                sparkle.style.top = `${y}px`;
+                
+                // 随机颜色（粉色调）
+                const hue = Math.random() * 30 + 330; // 粉色范围
+                const brightness = Math.random() * 20 + 80; // 亮度
+                sparkle.style.backgroundColor = `hsl(${hue}, 100%, ${brightness}%)`;
+                
+                container.appendChild(sparkle);
+                
+                // 随机方向和距离
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 150 + 50;
+                const finalX = x + Math.cos(angle) * distance;
+                const finalY = y + Math.sin(angle) * distance;
+                
+                // 动画
+                const duration = Math.random() * 1000 + 1000;
+                
+                sparkle.animate([
+                    { transform: `translate(0, 0)`, opacity: 1 },
+                    { transform: `translate(${finalX - x}px, ${finalY - y}px)`, opacity: 0 }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                });
+                
+                // 移除元素
+                setTimeout(() => {
+                    container.removeChild(sparkle);
+                }, duration);
+            }
+            
+            // 创建心形粒子
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-particle');
+                heart.textContent = '❤️';
+                
+                // 初始位置
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                
+                container.appendChild(heart);
+                
+                // 随机方向和距离
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 100 + 30;
+                const finalX = x + Math.cos(angle) * distance;
+                const finalY = y + Math.sin(angle) * distance;
+                
+                // 动画
+                const duration = Math.random() * 1500 + 1500;
+                
+                heart.animate([
+                    { transform: `translate(0, 0) rotate(0deg)`, opacity: 1, fontSize: '16px' },
+                    { transform: `translate(${finalX - x}px, ${finalY - y}px) rotate(360deg)`, opacity: 0, fontSize: '24px' }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                });
+                
+                // 移除元素
+                setTimeout(() => {
+                    container.removeChild(heart);
+                }, duration);
+            }
+        }
+        
+        // 按钮交互
+        const yesButton = document.getElementById('yes-button');
+        const noButton = document.getElementById('no-button');
+        const orderForm = document.getElementById('order-form');
+        const submitOrder = document.getElementById('submit-order');
+        const cancelOrder = document.getElementById('cancel-order');
+        
+        yesButton.addEventListener('click', function(e) {
+            // 获取按钮位置
+            const rect = e.target.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            // 创建星星效果
+            createSparkles(x, y);
+            
+            // 显示订单表单
+            setTimeout(() => {
+                orderForm.style.display = 'flex';
+            }, 1500);
+        });
+        
+        // 让"再考虑一下"按钮逃跑
+        noButton.addEventListener('mouseover', function() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const buttonWidth = this.offsetWidth;
+            const buttonHeight = this.offsetHeight;
+            
+            // 计算安全区域（距离边缘有一定距离）
+            const maxX = windowWidth - buttonWidth - 20;
+            const maxY = windowHeight - buttonHeight - 20;
+            
+            // 随机生成新位置
+            const newX = Math.random() * maxX + 10;
+            const newY = Math.random() * maxY + 10;
+            
+            // 设置新位置
+            this.style.position = 'fixed';
+            this.style.left = `${newX}px`;
+            this.style.top = `${newY}px`;
+            this.style.bottom = 'auto';
+            this.style.transform = 'none';
+        });
+        
+        // 取消订单
+        cancelOrder.addEventListener('click', function() {
+            orderForm.style.display = 'none';
+        });
+        
+        // 阻止表单在点击内部时关闭
+        orderForm.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+        
+        // 数据面板交互
+        const dataPanel = document.getElementById('data-panel');
+        const dataDisplay = document.getElementById('data-display');
+        const closeData = document.getElementById('close-data');
+        const dataList = document.getElementById('data-list');
+        
+        dataPanel.addEventListener('click', function() {
+            dataDisplay.style.display = 'flex';
+            updateDataPanel();
+        });
+        
+        closeData.addEventListener('click', function() {
+            dataDisplay.style.display = 'none';
+        });
+        
+        dataDisplay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+        
+        // 保存订单数据
+        function saveOrderData(userInfo) {
+            // 获取现有数据
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            // 添加新订单
+            orders.push({
+                ...userInfo,
+                timestamp: new Date().toISOString()
+            });
+            
+            // 保存到localStorage
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            // 更新数据面板
+            updateDataPanel();
+        }
+        
+        // 更新数据面板
+        function updateDataPanel() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            if (orders.length === 0) {
+                dataList.innerHTML = '<p style="text-align: center; color: #999;">暂无数据</p>';
+                return;
+            }
+            
+            // 按时间倒序排列
+            orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // 生成HTML
+            let html = '';
+            orders.forEach((order, index) => {
+                const date = new Date(order.timestamp).toLocaleString('zh-CN');
+                html += `
+                    <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <h3 style="color: #ff427f; margin: 0;">订单 #${index + 1}</h3>
+                            <span style="color: #999; font-size: 14px;">${date}</span>
+                        </div>
+                        <p><strong>地址:</strong> ${order.address}</p>
+                        <p><strong>手机号:</strong> ${order.phone}</p>
+                        <p><strong>想对阿常说的话:</strong> ${order.message}</p>
+                        <p><strong>幸运奖品:</strong> ${order.prize}</p>
+                    </div>
+                `;
+            });
+            
+            dataList.innerHTML = html;
+        }
+        
+        // 提交订单
+        submitOrder.addEventListener('click', function() {
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+            const prize = document.getElementById('prize').value;
+            
+            // 简单验证
+            if (!address || !phone) {
+                alert('请填写地址和手机号');
+                return;
+            }
+            
+            // 保存数据
+            const userInfo = {
+                address,
+                phone,
+                message: message || '暂无留言',
+                prize
+            };
+            
+            saveOrderData(userInfo);
+            
+            // 发送邮件
+            sendEmail(userInfo);
+            
+            // 显示成功信息并关闭表单
+            alert('提交成功！');
+            orderForm.style.display = 'none';
+            
+            // 重置表单
+            document.getElementById('address').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('message').value = '';
+            document.getElementById('prize').selectedIndex = 0;
+        });
+        
+        // 发送邮件函数
