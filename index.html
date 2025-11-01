@@ -99,538 +99,2045 @@
             border: none;
             margin: 0;
         }
+        
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* SVG 容器样式 */
+        svg {
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 20px rgba(255, 46, 99, 0.8));
+        }
+        
+        /* 心形路径样式 */
+        #heart-path {
+            fill: none;
+            stroke: #ff2e63;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+        }
+        
+        #heart-fill {
+            fill: rgba(255, 46, 99, 0.0);
+        }
+        
+        /* 文字样式 */
+        #name-text {
+            font-size: 24px;
+            font-weight: bold;
+            fill: #fff;
+            opacity: 0;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            /* 文字在对话框心形完成后显示 */
+        }
+        
+        /* 按钮样式 */
+        #yes-button {
+            position: relative;
+            margin-top: 30px;
+            padding: 10px 30px;
+            background: transparent;
+            border: 2px solid #ff2e63;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 30px;
+            opacity: 0;
+            /* 按钮在对话框心形完成后显示 */
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        #yes-button:hover {
+            background: rgba(255, 46, 99, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 46, 99, 0.8);
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 100;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #ff2e63, #ff5f6d);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 46, 99, 0.8);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-title {
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            color: #fff;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            touch-action: auto;
+            -webkit-user-select: text;
+            user-select: text;
+            min-height: 48px;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+        
+        .submit-button {
+            background: #fff;
+            color: #ff2e63;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            touch-action: manipulation;
+            min-height: 48px;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal-message {
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* 幸运轮盘样式 */
+        .wheel-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .wheel {
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            transition: transform 3s ease-in-out;
+        }
+        
+        .wheel-section {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            writing-mode: horizontal-tb;
+            padding: 12px;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1.2;
+            transform: translate(-5%, -5%) rotate(var(--rotate-angle, 0deg));
+        }
+        
+        .wheel-section:nth-child(1) { background-color: #ff2e63; transform: rotate(0deg); }
+        .wheel-section:nth-child(2) { background-color: #ffbc42; transform: rotate(60deg); }
+        .wheel-section:nth-child(3) { background-color: #08d9d6; transform: rotate(120deg); }
+        .wheel-section:nth-child(4) { background-color: #252a34; transform: rotate(180deg); }
+        .wheel-section:nth-child(5) { background-color: #00adb5; transform: rotate(240deg); }
+        .wheel-section:nth-child(6) { background-color: #f72585; transform: rotate(300deg); }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            /* 改进的指针样式 - 调整位置使其精确指向轮盘中心 */
+        }
+        
+        /* 轮盘结果显示样式 */
+        .prize-result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff !important;
+            text-align: center;
+            z-index: 100;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+        
+        .wheel-pointer::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 30px solid #ff2e63;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+        
+        .wheel-pointer::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 15px;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+        
+        .spin-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 4px solid #252a34;
+            color: #252a34;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+        
+        .spin-button:hover {
+            background-color: #ff2e63;
+            color: white;
+            border-color: #ff2e63;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .spin-button:disabled {
+            background-color: #ccc;
+            color: #666;
+            border-color: #ccc;
+            cursor: not-allowed;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .prize-result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff2e63;
+            min-height: 25px;
+        }
+        
+        /* 响应式模态框 */
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .modal-title {
+                font-size: 20px;
+            }
+            
+            .form-input {
+                font-size: 14px;
+            }
+        }
+        
+        /* 背景光效 */
+        .background-glow {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,46,99,0.3) 0%, rgba(255,46,99,0) 70%);
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0;
+            animation: glowAppear 1s ease-out forwards 3.5s;
+        }
+        
+        .glow-1 {
+            width: 500px;
+            height: 500px;
+        }
+        
+        .glow-2 {
+            width: 700px;
+            height: 700px;
+            animation-delay: 3.8s;
+        }
+        
+        /* 星光效果 */
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+        
+        /* 对话框气泡效果 */
+        .bubble {
+            position: absolute;
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 120px;
+            word-wrap: break-word;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            font-size: 14px;
+            line-height: 1.4;
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 36px;
+        }
+        
+        /* 丰富的颜色样式 */
+        .bubble.pink {
+            background-color: #ff6b9d;
+            color: white;
+        }
+        
+        .bubble.purple {
+            background-color: #9c27b0;
+            color: white;
+        }
+        
+        .bubble.yellow {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+        
+        .bubble.green {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .bubble.blue {
+            background-color: #2196f3;
+            color: white;
+        }
+        
+        .bubble.orange {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .bubble.teal {
+            background-color: #009688;
+            color: white;
+        }
+        
+        .bubble.red {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .bubble.indigo {
+            background-color: #3f51b5;
+            color: white;
+        }
+        
+        .bubble.lime {
+            background-color: #cddc39;
+            color: #333;
+        }
+        
+        .bubble.appear {
+            animation: bubbleAppear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .bubble.float {
+            animation: bubbleFloat 4s ease-in-out infinite;
+        }
+        
+        /* 背景装饰心形 */
+        .heart-decoration {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .heart-decoration.appear {
+            animation: heartDecorationAppear 1s ease-out forwards;
+        }
+        
+        /* 下落星星 */
+        .falling-star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+        
+        /* 动画定义 */
+        @keyframes drawHeart {
+            0% {
+                stroke-dashoffset: 1000;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        @keyframes fillHeart {
+            0% {
+                fill: rgba(255, 46, 99, 0.0);
+            }
+            100% {
+                fill: rgba(255, 46, 99, 0.5);
+            }
+        }
+        
+        @keyframes revealText {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes revealButton {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fallStar {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(200vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes glowAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bubbleAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0) translateY(20px);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.1) translateY(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes bubbleFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-8px) rotate(2deg);
+            }
+        }
+        
+        @keyframes heartDecorationAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-10deg);
+            }
+            70% {
+                opacity: 0.3;
+                transform: scale(1.05) rotate(0deg);
+            }
+            100% {
+                opacity: 0.2;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+        
+        /* 计时工具样式 */
+        .countdown-container {
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px 30px;
+            background: rgba(255, 46, 99, 0.8);
+            border: 3px solid #ff2e63;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 20px;
+            text-align: center;
+            opacity: 1;
+            z-index: 9999; /* 提高层级确保在顶部 */
+            box-shadow: 0 0 20px rgba(255, 46, 99, 0.8);
+            min-width: 300px;
+            display: block; /* 确保是块元素 */
+        }
+        
+        .countdown-days {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffbc42;
+            text-shadow: 0 0 15px rgba(255, 188, 66, 0.8);
+            background: rgba(255, 188, 66, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            svg {
+                width: 300px;
+                height: 280px;
+            }
+            
+            #name-text {
+                font-size: 18px;
+            }
+            
+            #yes-button {
+                font-size: 16px;
+                padding: 8px 20px;
+            }
+            
+            .glow-1 {
+                width: 350px;
+                height: 350px;
+            }
+            
+            .glow-2 {
+                width: 500px;
+                height: 500px;
+            }
+            
+            .countdown-container {
+                font-size: 16px;
+                padding: 12px 20px;
+            }
+            
+            .countdown-days {
+                font-size: 24px;
+            }
+            
+            /* 模态框适配 */
+            .modal-content {
+                width: 80%;
+                max-width: 500px;
+                padding: 20px;
+            }
+            
+            /* 轮盘适配 */
+            .wheel-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .wheel {
+                width: 230px;
+                height: 230px;
+                border-width: 6px;
+            }
+            
+            .wheel-section {
+                font-size: 10px;
+                writing-mode: horizontal-tb;
+                transform: translate(-15%, -15%) rotate(var(--rotate-angle, 0deg));
+                padding: 6px;
+                line-height: 1.1;
+            }
+            
+            /* 修正各扇区的文字旋转角度 */
+            .wheel-section:nth-child(1) { --rotate-angle: 0deg; }
+            .wheel-section:nth-child(2) { --rotate-angle: 60deg; }
+            .wheel-section:nth-child(3) { --rotate-angle: 120deg; }
+            .wheel-section:nth-child(4) { --rotate-angle: 180deg; }
+            .wheel-section:nth-child(5) { --rotate-angle: 240deg; }
+            .wheel-section:nth-child(6) { --rotate-angle: 300deg; }
+            
+            .spin-button {
+                width: 60px;
+                height: 60px;
+                font-size: 12px;
+            }
+            
+            /* 表单适配 */
+            .form-input {
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                font-size: 16px; /* 防止iOS缩放 */
+                -webkit-tap-highlight-color: transparent; /* 移除触摸高亮 */
+            }
+            
+            .container {
+                padding: 0 10px;
+                transform: scale(0.9);
+            }
+            
+            svg {
+                width: 250px;
+                height: 230px;
+            }
+            
+            #name-text {
+                font-size: 16px;
+                transform: scale(0.95);
+            }
+            
+            #yes-button {
+                font-size: 14px;
+                padding: 6px 16px;
+                min-height: 44px;
+            }
+            
+            .glow-1 {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .glow-2 {
+                width: 400px;
+                height: 400px;
+            }
+            
+            .countdown-container {
+                font-size: 14px;
+                padding: 10px 15px;
+                margin: 15px auto;
+                min-width: auto;
+                width: 90%;
+            }
+            
+            .countdown-days {
+                font-size: 20px;
+            }
+            
+            /* 模态框适配 */
+            .modal {
+                padding: 10px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            .modal-title {
+                font-size: 20px;
+            }
+            
+            /* 轮盘适配 */
+            .wheel-container {
+                width: 200px;
+                height: 200px;
+                margin: 15px auto;
+            }
+            
+            .wheel {
+                width: 180px;
+                height: 180px;
+                border-width: 5px;
+            }
+            
+            .wheel-section {
+                font-size: 12px;
+                padding: 5px;
+                writing-mode: horizontal-tb;
+                font-weight: normal;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .spin-button {
+                width: 50px;
+                height: 50px;
+                font-size: 12px;
+            }
+            
+            /* 表单适配 */
+            .form-group {
+                margin-bottom: 12px;
+            }
+            
+            .form-input {
+                width: 100%;
+                padding: 14px;
+                font-size: 16px; /* 防止iOS缩放 */
+                border-radius: 8px;
+                -webkit-appearance: none;
+                appearance: none;
+                border: none;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+            
+            .form-input:focus {
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+                transform: translateY(-1px);
+            }
+            
+            input[type="tel"] {
+                inputmode: numeric;
+                pattern: "[0-9]*";
+                -webkit-inputmode: numeric;
+            }
+            
+            .submit-button {
+                padding: 15px;
+                min-height: 48px;
+                font-size: 16px;
+                width: 100%;
+                touch-action: manipulation;
+            }
+            
+            /* 音乐控制按钮适配 */
+            .music-control {
+                width: 44px;
+                height: 44px;
+                top: 15px;
+                right: 15px;
+            }
+            
+            /* 数据面板适配 */
+            #data-panel {
+                width: 95%;
+                margin: 0 auto;
+                overflow-x: auto;
+            }
+            
+            .data-table {
+                width: 100%;
+                font-size: 12px;
+            }
+            
+            /* 幸运天数计算器适配 */
+            #daysCounter {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+        
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            #yes-button:active {
+                transform: scale(0.95);
+            }
+            
+            .music-control:active {
+                transform: scale(0.95);
+            }
+            
+            .spin-button:active {
+                transform: scale(0.95);
+            }
+            
+            .submit-button:active {
+                transform: scale(0.95);
+            }
+        }
+        
+
+        
+
     </style>
 </head>
 <body>
-    <!-- 音乐播放元素 -->
-    <audio id="bg-music" loop>
-        <source src="春娇与志明.mp3" type="audio/mpeg">
-    </audio>
+    <!-- 计时工具 -->
+    
+    <div class="container">
+        
+        <!-- 背景光效 -->
+        <div class="background-glow glow-1"></div>
+        <div class="background-glow glow-2"></div>
+        
+        <!-- 文字 -->
+        <svg width="600" height="400" viewBox="0 0 600 400">
+            <!-- 恢复原始心形路径 - 增大尺寸以包裹文字 -->
+            <path id="heart-path" d="M300,80 C380,0 520,140 300,280 C80,140 220,0 300,80 Z" />
+            <path id="heart-fill" d="M300,80 C380,0 520,140 300,280 C80,140 220,0 300,80 Z" />
+            <text id="name-text" x="300" y="180" text-anchor="middle" dominant-baseline="middle" font-size="28">阿雯可以做阿常的幸运星嘛</text>
+        </svg>
+        
+        <!-- 可以按钮 -->
+        <button id="yes-button">可以</button>
+    </div>
     
     <!-- 音乐控制按钮 -->
-    <div class="music-control">
-        <div class="music-icon"></div>
+    <div class="music-control" id="musicControl">
+        <div class="music-icon" id="musicIcon"></div>
     </div>
     
-    <canvas id="canvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
-    
-    <!-- 主内容容器 -->
-    <div id="main-container" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #ff6b6b, #ff8e53, #feb47b);">
-        <!-- 心形动画区域 -->
-        <div id="heart-container" style="position: relative; display: flex; justify-content: center; align-items: center;">
-            <svg id="heart-svg" width="300" height="300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="fill: transparent; stroke-dasharray: 1000; stroke-dashoffset: 1000;">
-                </path>
-            </svg>
-            <div id="text-overlay" style="position: absolute; text-align: center; opacity: 0; transform: scale(0.8); transition: all 0.5s ease;">
-                <h1 style="color: white; font-family: 'Microsoft YaHei', sans-serif; font-size: 24px; margin-bottom: 10px;">阿常，做我女朋友好吗？</h1>
-                <p style="color: white; font-family: 'Microsoft YaHei', sans-serif; font-size: 16px;">我喜欢你很久了</p>
-            </div>
-        </div>
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+                    <h2 class="modal-title">阿雯与阿常的留言板</h2>
+                    
+                    <!-- 幸运轮盘 -->
+                    <div class="wheel-container">
+                        <div id="wheel" class="wheel">
+                            <div class="wheel-section" style="--index:0">奶茶</div>
+                            <div class="wheel-section" style="--index:1">小蛋糕</div>
+                            <div class="wheel-section" style="--index:2">项链</div>
+                            <div class="wheel-section" style="--index:3">给阿常说早安</div>
+                            <div class="wheel-section" style="--index:4">零食礼包</div>
+                            <div class="wheel-section" style="--index:5">花</div>
+                        </div>
+                        <!-- 指针已移除 -->
+                        <button id="spin-button" class="spin-button">幸运转盘</button>
+                        <p id="prize-result" class="prize-result"></p>
+                    </div>
+                    
+                    <form id="modal-form" class="modal-form">
+                        <div class="form-group">
+                            <label for="address" class="form-label">地址</label>
+                            <input type="text" id="address" name="address" placeholder="请输入您的地址" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">手机号码</label>
+                            <input type="tel" id="phone" name="phone" placeholder="请输入您的手机号" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="milk-tea" class="form-label">今天想对阿常说的话</label>
+                            <input type="text" id="milk-tea" name="milk-tea" placeholder="请输入您想对阿常说的话" class="form-input" required>
+                        </div>
+                        <input type="hidden" id="prize" name="prize" value="">
+                        <button type="submit" class="submit-button">确定</button>
+                    </form>
+                    <p class="modal-message">填写地址和想对阿常说的话，可以获得幸运礼包哦~</p>
+                </div>
     </div>
     
-    <!-- 按钮区域 -->
-    <div id="buttons-container" style="position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); display: flex; gap: 30px; opacity: 0; transition: opacity 1s ease;">
-        <button id="yes-button" style="padding: 15px 40px; font-size: 18px; background-color: #ff427f; color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 0 20px rgba(255, 46, 99, 0.8); transition: all 0.3s ease;">
-            可以
-        </button>
-        <button id="no-button" style="padding: 15px 40px; font-size: 18px; background-color: #666; color: white; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease;">
-            再考虑一下
-        </button>
-    </div>
-    
-    <!-- 订单表单弹窗 -->
-    <div id="order-form" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="background: white; border-radius: 20px; padding: 30px; width: 90%; max-width: 500px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);">
-            <h2 style="text-align: center; color: #ff427f; margin-bottom: 20px; font-family: 'Microsoft YaHei', sans-serif;">填写你的信息</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">地址</label>
-                <input type="text" id="address" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;" placeholder="请输入你的地址">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">手机号</label>
-                <input type="tel" id="phone" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;" placeholder="请输入你的手机号">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">想对阿常说的话</label>
-                <textarea id="message" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 100px; resize: vertical;" placeholder="想说点什么吗？"></textarea>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #333; font-family: 'Microsoft YaHei', sans-serif;">幸运奖品</label>
-                <select id="prize" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; background-color: white;">
-                    <option value="爱情奶茶">爱情奶茶</option>
-                    <option value="真心巧克力">真心巧克力</option>
-                    <option value="幸福糖果">幸福糖果</option>
-                    <option value="浪漫鲜花">浪漫鲜花</option>
-                </select>
-            </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <button id="submit-order" style="flex: 1; padding: 15px; font-size: 16px; background-color: #ff427f; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">确定</button>
-                <button id="cancel-order" style="flex: 1; padding: 15px; font-size: 16px; background-color: #666; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">取消</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 数据展示面板 -->
-    <div id="data-panel" style="position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); z-index: 99; transition: all 0.3s ease;">
-        <span style="font-size: 20px; color: #ff427f;">📋</span>
-    </div>
-    
-    <!-- 数据展示弹窗 -->
-    <div id="data-display" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="background: white; border-radius: 20px; padding: 30px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #ff427f; font-family: 'Microsoft YaHei', sans-serif;">提交记录</h2>
-                <button id="close-data" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
-            </div>
-            
-            <div id="data-list" style="font-family: 'Microsoft YaHei', sans-serif;">
-                <!-- 数据记录将在这里动态生成 -->
-            </div>
-        </div>
-    </div>
+
     
     <script>
-        // 心形绘制动画
-        const heartPath = document.querySelector('#heart-svg path');
-        const textOverlay = document.querySelector('#text-overlay');
-        const buttonsContainer = document.querySelector('#buttons-container');
-        
-        // 开始绘制心形
-        function drawHeart() {
-            let offset = 1000;
-            const interval = setInterval(() => {
-                offset -= 20;
-                heartPath.style.strokeDashoffset = offset;
+        document.addEventListener('DOMContentLoaded', function() {
+            // 使用改进的算法生成心形曲线点
+            function generateHeartPoints(size = 100, centerX = 0, centerY = 0, points = 100) {
+                const heartPoints = [];
                 
-                if (offset <= 0) {
-                    clearInterval(interval);
-                    // 心形绘制完成后填充颜色
-                    heartPath.style.fill = '#ff427f';
-                    // 显示文字和按钮
-                    setTimeout(() => {
-                        textOverlay.style.opacity = 1;
-                        textOverlay.style.transform = 'scale(1)';
-                        setTimeout(() => {
-                            buttonsContainer.style.opacity = 1;
-                        }, 500);
-                    }, 500);
+                for (let i = 0; i <= points; i++) {
+                    const t = (i / points) * Math.PI * 2;
+                    // 使用改进的心形曲线公式
+                    const x = 16 * Math.pow(Math.sin(t), 3);
+                    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+                    
+                    // 调整坐标并添加到数组
+                    heartPoints.push({
+                        x: centerX + x * (size / 16),
+                        y: centerY - y * (size / 16) // 注意这里是减号，因为SVG坐标是Y轴向下
+                    });
                 }
-            }, 30);
-        }
-        
-        // 音乐控制功能
-        const bgMusic = document.getElementById('bg-music');
-        const musicControl = document.querySelector('.music-control');
-        const musicIcon = document.querySelector('.music-icon');
-        
-        function toggleMusic() {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                musicIcon.classList.remove('paused');
-            } else {
-                bgMusic.pause();
-                musicIcon.classList.add('paused');
-            }
-        }
-        
-        musicControl.addEventListener('click', toggleMusic);
-        
-        // 尝试自动播放音乐
-        document.addEventListener('click', function startMusic() {
-            bgMusic.play().then(() => {
-                musicControl.style.display = 'flex';
-                document.removeEventListener('click', startMusic);
-            }).catch(error => {
-                console.log('无法自动播放音乐:', error);
-            });
-        }, { once: true });
-        
-        // 生成星星散落效果
-        function createSparkles(x, y) {
-            const container = document.body;
-            
-            for (let i = 0; i < 100; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.classList.add('sparkle');
                 
-                // 随机大小
-                const size = Math.random() * 6 + 2;
-                sparkle.style.width = `${size}px`;
-                sparkle.style.height = `${size}px`;
-                
-                // 初始位置
-                sparkle.style.left = `${x}px`;
-                sparkle.style.top = `${y}px`;
-                
-                // 随机颜色（粉色调）
-                const hue = Math.random() * 30 + 330; // 粉色范围
-                const brightness = Math.random() * 20 + 80; // 亮度
-                sparkle.style.backgroundColor = `hsl(${hue}, 100%, ${brightness}%)`;
-                
-                container.appendChild(sparkle);
-                
-                // 随机方向和距离
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 150 + 50;
-                const finalX = x + Math.cos(angle) * distance;
-                const finalY = y + Math.sin(angle) * distance;
-                
-                // 动画
-                const duration = Math.random() * 1000 + 1000;
-                
-                sparkle.animate([
-                    { transform: `translate(0, 0)`, opacity: 1 },
-                    { transform: `translate(${finalX - x}px, ${finalY - y}px)`, opacity: 0 }
-                ], {
-                    duration: duration,
-                    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                });
-                
-                // 移除元素
-                setTimeout(() => {
-                    container.removeChild(sparkle);
-                }, duration);
+                return heartPoints;
             }
             
-            // 创建心形粒子
-            for (let i = 0; i < 20; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart-particle');
-                heart.textContent = '❤️';
+            // 生成屏幕外部的随机起始位置
+            function getRandomStartPosition() {
+                const edge = Math.floor(Math.random() * 4); // 0: 上, 1: 右, 2: 下, 3: 左
+                const offset = 100; // 屏幕外偏移量
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
                 
-                // 初始位置
-                heart.style.left = `${x}px`;
-                heart.style.top = `${y}px`;
-                
-                container.appendChild(heart);
-                
-                // 随机方向和距离
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 100 + 30;
-                const finalX = x + Math.cos(angle) * distance;
-                const finalY = y + Math.sin(angle) * distance;
-                
-                // 动画
-                const duration = Math.random() * 1500 + 1500;
-                
-                heart.animate([
-                    { transform: `translate(0, 0) rotate(0deg)`, opacity: 1, fontSize: '16px' },
-                    { transform: `translate(${finalX - x}px, ${finalY - y}px) rotate(360deg)`, opacity: 0, fontSize: '24px' }
-                ], {
-                    duration: duration,
-                    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                });
-                
-                // 移除元素
-                setTimeout(() => {
-                    container.removeChild(heart);
-                }, duration);
-            }
-        }
-        
-        // 按钮交互
-        const yesButton = document.getElementById('yes-button');
-        const noButton = document.getElementById('no-button');
-        const orderForm = document.getElementById('order-form');
-        const submitOrder = document.getElementById('submit-order');
-        const cancelOrder = document.getElementById('cancel-order');
-        
-        yesButton.addEventListener('click', function(e) {
-            // 获取按钮位置
-            const rect = e.target.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
-            
-            // 创建星星效果
-            createSparkles(x, y);
-            
-            // 显示订单表单
-            setTimeout(() => {
-                orderForm.style.display = 'flex';
-            }, 1500);
-        });
-        
-        // 让"再考虑一下"按钮逃跑
-        noButton.addEventListener('mouseover', function() {
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            const buttonWidth = this.offsetWidth;
-            const buttonHeight = this.offsetHeight;
-            
-            // 计算安全区域（距离边缘有一定距离）
-            const maxX = windowWidth - buttonWidth - 20;
-            const maxY = windowHeight - buttonHeight - 20;
-            
-            // 随机生成新位置
-            const newX = Math.random() * maxX + 10;
-            const newY = Math.random() * maxY + 10;
-            
-            // 设置新位置
-            this.style.position = 'fixed';
-            this.style.left = `${newX}px`;
-            this.style.top = `${newY}px`;
-            this.style.bottom = 'auto';
-            this.style.transform = 'none';
-        });
-        
-        // 取消订单
-        cancelOrder.addEventListener('click', function() {
-            orderForm.style.display = 'none';
-        });
-        
-        // 阻止表单在点击内部时关闭
-        orderForm.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
-        });
-        
-        // 数据面板交互
-        const dataPanel = document.getElementById('data-panel');
-        const dataDisplay = document.getElementById('data-display');
-        const closeData = document.getElementById('close-data');
-        const dataList = document.getElementById('data-list');
-        
-        dataPanel.addEventListener('click', function() {
-            dataDisplay.style.display = 'flex';
-            updateDataPanel();
-        });
-        
-        closeData.addEventListener('click', function() {
-            dataDisplay.style.display = 'none';
-        });
-        
-        dataDisplay.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
-        });
-        
-        // 保存订单数据
-        function saveOrderData(userInfo) {
-            // 获取现有数据
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            
-            // 添加新订单
-            orders.push({
-                ...userInfo,
-                timestamp: new Date().toISOString()
-            });
-            
-            // 保存到localStorage
-            localStorage.setItem('orders', JSON.stringify(orders));
-            
-            // 更新数据面板
-            updateDataPanel();
-        }
-        
-        // 更新数据面板
-        function updateDataPanel() {
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            
-            if (orders.length === 0) {
-                dataList.innerHTML = '<p style="text-align: center; color: #999;">暂无数据</p>';
-                return;
+                switch(edge) {
+                    case 0: // 上
+                        return { x, y: -offset };
+                    case 1: // 右
+                        return { x: window.innerWidth + offset, y };
+                    case 2: // 下
+                        return { x, y: window.innerHeight + offset };
+                    case 3: // 左
+                        return { x: -offset, y };
+                }
             }
             
-            // 按时间倒序排列
-            orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            
-            // 生成HTML
-            let html = '';
-            orders.forEach((order, index) => {
-                const date = new Date(order.timestamp).toLocaleString('zh-CN');
-                html += `
-                    <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <h3 style="color: #ff427f; margin: 0;">订单 #${index + 1}</h3>
-                            <span style="color: #999; font-size: 14px;">${date}</span>
-                        </div>
-                        <p><strong>地址:</strong> ${order.address}</p>
-                        <p><strong>手机号:</strong> ${order.phone}</p>
-                        <p><strong>想对阿常说的话:</strong> ${order.message}</p>
-                        <p><strong>幸运奖品:</strong> ${order.prize}</p>
-                    </div>
-                `;
-            });
-            
-            dataList.innerHTML = html;
-        }
-        
-        // 提交订单
-        submitOrder.addEventListener('click', function() {
-            const address = document.getElementById('address').value;
-            const phone = document.getElementById('phone').value;
-            const message = document.getElementById('message').value;
-            const prize = document.getElementById('prize').value;
-            
-            // 简单验证
-            if (!address || !phone) {
-                alert('请填写地址和手机号');
-                return;
+            // 创建按钮悬停时的闪光效果
+            function createSparkles(element) {
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const sparkleCount = 20;
+                
+                for (let i = 0; i < sparkleCount; i++) {
+                    setTimeout(() => {
+                        const sparkle = document.createElement('div');
+                        sparkle.classList.add('sparkle');
+                        
+                        // 随机大小
+                        const size = 2 + Math.random() * 4;
+                        sparkle.style.width = `${size}px`;
+                        sparkle.style.height = `${size}px`;
+                        
+                        // 随机颜色
+                        const colors = ['#fff', '#ffbc42', '#ff2e63', '#08d9d6'];
+                        sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        
+                        // 起始位置在按钮中心
+                        sparkle.style.left = `${centerX}px`;
+                        sparkle.style.top = `${centerY}px`;
+                        
+                        document.body.appendChild(sparkle);
+                        
+                        // 随机方向和距离
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = 20 + Math.random() * 30;
+                        const endX = centerX + Math.cos(angle) * distance;
+                        const endY = centerY + Math.sin(angle) * distance;
+                        
+                        // 动画
+                        setTimeout(() => {
+                            sparkle.style.transition = 'all 0.8s ease-out';
+                            sparkle.style.left = `${endX}px`;
+                            sparkle.style.top = `${endY}px`;
+                            sparkle.style.opacity = '0';
+                            sparkle.style.transform = 'scale(0)';
+                            
+                            // 移除
+                            setTimeout(() => {
+                                if (sparkle.parentNode) {
+                                    sparkle.parentNode.removeChild(sparkle);
+                                }
+                            }, 800);
+                        }, 50);
+                    }, i * 50);
+                }
             }
             
-            // 保存数据
-            const userInfo = {
-                address,
-                phone,
-                message: message || '暂无留言',
-                prize
+            // 创建心形爆炸效果
+            function createHeartBurst(element) {
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const particleCount = 30;
+                const heartEmojis = ['❤️', '💕', '💖', '💗', '💓', '💘'];
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('heart-particle');
+                    particle.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                    
+                    // 随机大小
+                    const size = 12 + Math.random() * 12;
+                    particle.style.fontSize = `${size}px`;
+                    
+                    // 起始位置
+                    particle.style.left = `${centerX}px`;
+                    particle.style.top = `${centerY}px`;
+                    particle.style.transform = 'translate(-50%, -50%) scale(0)';
+                    
+                    document.body.appendChild(particle);
+                    
+                    // 随机方向和距离
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 40 + Math.random() * 60;
+                    const endX = centerX + Math.cos(angle) * distance;
+                    const endY = centerY + Math.sin(angle) * distance;
+                    
+                    // 随机旋转
+                    const rotation = Math.random() * 360;
+                    
+                    // 动画
+                    setTimeout(() => {
+                        particle.style.transition = 'all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        particle.style.left = `${endX}px`;
+                        particle.style.top = `${endY}px`;
+                        particle.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(1)`;
+                        
+                        // 上升并消失
+                        setTimeout(() => {
+                            particle.style.transition = 'all 1s ease-out';
+                            particle.style.top = `${endY - 50}px`;
+                            particle.style.opacity = '0';
+                            particle.style.transform = `translate(-50%, -50%) rotate(${rotation + 180}deg) scale(0.5)`;
+                            
+                            // 移除
+                            setTimeout(() => {
+                                if (particle.parentNode) {
+                                    particle.parentNode.removeChild(particle);
+                                }
+                            }, 1000);
+                        }, 600);
+                    }, 50);
+                }
+            }
+            
+            // 对话内容数据结构
+            const conversationThemes = {
+                firstMeeting: [
+                    '第一眼见到你，就觉得你特别',
+                    '那天阳光很好，而你比阳光更耀眼',
+                    '你不经意的一个微笑，我记了很久',
+                    '认识你之后，世界变得不一样了',
+                    '第一次和你说话，我紧张得忘记了想说什么'
+                ],
+                deepFeelings: [
+                    '你是我生命中最美的风景',
+                    '想把世界上最好的都给你',
+                    '有你在，再难的日子也变得容易',
+                    '你的存在让我的生活充满意义',
+                    '每一个平凡的日子，因为有你而不平凡'
+                ],
+                sweetMemories: [
+                    '记得那天我们一起看的日落吗？',
+                    '第一次牵手的感觉我永远不会忘记',
+                    '那次旅行是我最美好的回忆',
+                    '那天你笑起来，整个世界都亮了',
+                    '你为我做的一切，我都珍藏在心里'
+                ],
+                promises: [
+                    '我会一直陪着你，不管发生什么',
+                    '我会用一生的时间证明我的爱',
+                    '无论顺境还是逆境，我都在你身边',
+                    '我想和你一起看无数次日出日落',
+                    '余生请多指教',
+                    '执子之手，与子偕老'
+                ],
+                dailyAffection: [
+                    '今天有没有想我呀？',
+                    '记得按时吃饭，照顾好自己',
+                    '今天天气很好，就像见到你一样开心',
+                    '工作再忙也要注意休息哦',
+                    '晚上一起看星星吧？',
+                    '想听你的声音了',
+                    '今天又想了你一整天'
+                ],
+                compliments: [
+                    '你笑起来真好看',
+                    '你的眼睛里有星星',
+                    '你穿这件衣服真好看',
+                    '你做的菜是世界上最美味的',
+                    '你真聪明，什么都难不倒你',
+                    '你认真的样子最迷人',
+                    '和你在一起的时光总是那么美好'
+                ],
+                gratitude: [
+                    '谢谢你一直以来的陪伴',
+                    '有你真好，我很幸运',
+                    '感谢你出现在我的生命里',
+                    '遇到你是我最大的福气',
+                    '谢谢你爱我',
+                    '遇见你，是我这辈子最幸福的事'
+                ],
+                specialMoments: [
+                    '和你在一起的每一天都值得纪念',
+                    '有你的夜晚，连星星都变得更亮了',
+                    '我喜欢看你专注做一件事的样子',
+                    '你是我每天醒来最想见到的人',
+                    '和你聊天，时间总是过得特别快'
+                ],
+                emojis: ['❤️', '💕', '💖', '💗', '💓', '💘', '💝', '🥰', '😍', '😘']
             };
             
-            saveOrderData(userInfo);
-            
-            // 发送邮件
-            sendEmail(userInfo);
-            
-            // 显示成功信息并关闭表单
-            alert('提交成功！');
-            orderForm.style.display = 'none';
-            
-            // 重置表单
-            document.getElementById('address').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('message').value = '';
-            document.getElementById('prize').selectedIndex = 0;
-        });
-        
-        // 发送邮件函数
-        async function sendEmail(userInfo) {
-            try {
-                const response = await fetch('/.netlify/functions/send-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(userInfo)
-                });
+            // 获取随机对话内容
+            function getRandomMessage() {
+                // 随机选择一个主题类别
+                const themeKeys = Object.keys(conversationThemes);
+                const randomTheme = themeKeys[Math.floor(Math.random() * themeKeys.length)];
                 
-                if (!response.ok) {
-                    throw new Error('网络响应错误');
+                // 从该主题中选择一条消息
+                const themeMessages = conversationThemes[randomTheme];
+                return themeMessages[Math.floor(Math.random() * themeMessages.length)];
+            }
+            
+            // 随机选择气泡类型
+            function getRandomBubbleType() {
+                const types = ['pink', 'purple', 'yellow', 'green', 'blue', 'orange', 'teal', 'red', 'indigo', 'lime'];
+                return types[Math.floor(Math.random() * types.length)];
+            }
+            
+            // 创建背景装饰心形
+            function createBackgroundDecorations() {
+                const container = document.querySelector('.container');
+                const decorationCount = 15;
+                
+                for (let i = 0; i < decorationCount; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart-decoration');
+                    
+                    // 随机大小
+                    const size = 20 + Math.random() * 80;
+                    heart.style.width = `${size}px`;
+                    heart.style.height = `${size}px`;
+                    
+                    // 随机位置（确保在视口范围内）
+                    const x = Math.random() * (window.innerWidth - size);
+                    const y = Math.random() * (window.innerHeight - size);
+                    heart.style.left = `${x}px`;
+                    heart.style.top = `${y}px`;
+                    
+                    // 随机旋转角度
+                    const rotation = Math.random() * 360;
+                    heart.style.transform = `rotate(${rotation}deg)`;
+                    
+                    // 创建SVG心形
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('width', size);
+                    svg.setAttribute('height', size);
+                    svg.setAttribute('viewBox', '0 0 100 100');
+                    
+                    const points = generateHeartPoints(40, 50, 50, 50);
+                    let pathData = `M${points[0].x},${points[0].y}`;
+                    
+                    for (let j = 1; j < points.length; j++) {
+                        pathData += ` L${points[j].x},${points[j].y}`;
+                    }
+                    
+                    pathData += ' Z';
+                    
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', pathData);
+                    path.setAttribute('fill', 'currentColor');
+                    
+                    // 随机颜色
+                    const colors = ['#ff2e63', '#ffbc42', '#08d9d6', '#fff'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    heart.style.color = color;
+                    
+                    svg.appendChild(path);
+                    heart.appendChild(svg);
+                    
+                    document.body.appendChild(heart);
+                    
+                    // 添加出现动画
+                    setTimeout(() => {
+                        heart.classList.add('appear');
+                    }, i * 200 + Math.random() * 1000);
+                }
+            }
+            
+            // 创建随机星光效果
+            function createStars() {
+                const container = document.querySelector('.container');
+                const starCount = 50;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    
+                    // 随机位置
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    star.style.left = `${x}vw`;
+                    star.style.top = `${y}vh`;
+                    
+                    // 随机动画持续时间
+                    const duration = 2 + Math.random() * 3;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    
+                    // 随机大小
+                    const size = 1 + Math.random() * 3;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    
+                    // 随机延迟
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    document.body.appendChild(star);
+                }
+            }
+            
+            // 创建临时气泡（有进有出效果）
+            function createTemporaryBubbles() {
+                const tempBubbleCount = 150;
+                
+                for (let i = 0; i < tempBubbleCount; i++) {
+                    setTimeout(() => {
+                        const bubble = document.createElement('div');
+                        bubble.classList.add('bubble');
+                        bubble.classList.add(getRandomBubbleType());
+                        bubble.textContent = getRandomMessage();
+                        
+                        // 随机大小
+                        const bubbleSize = 40 + Math.random() * 30;
+                        bubble.style.minWidth = `${bubbleSize}px`;
+                        bubble.style.maxWidth = `${bubbleSize + 30}px`;
+                        
+                        // 随机位置
+                        const startPos = getRandomStartPosition();
+                        bubble.style.left = `${startPos.x}px`;
+                        bubble.style.top = `${startPos.y}px`;
+                        bubble.style.opacity = '0';
+                        
+                        document.body.appendChild(bubble);
+                        
+                        // 触发重排
+                        void bubble.offsetWidth;
+                        
+                        // 出现动画
+                        setTimeout(() => {
+                            bubble.style.opacity = '1';
+                            bubble.style.transform = 'scale(1)';
+                            
+                            // 随机目标位置
+                            const targetX = Math.random() * window.innerWidth;
+                            const targetY = Math.random() * window.innerHeight;
+                            bubble.style.left = `${targetX}px`;
+                            bubble.style.top = `${targetY}px`;
+                            
+                            // 一段时间后消失
+                            setTimeout(() => {
+                                bubble.style.opacity = '0';
+                                bubble.style.transform = 'scale(0)';
+                                
+                                // 移除气泡
+                                setTimeout(() => {
+                                    if (bubble.parentNode) {
+                                        bubble.parentNode.removeChild(bubble);
+                                    }
+                                }, 800);
+                            }, 2000 + Math.random() * 3000);
+                        }, 50);
+                    }, i * 50);
+                }
+            }
+            
+            // 创建满屏气泡效果，浮现后定格2秒消失
+            function createBubbles() {
+                // 先创建临时气泡（有进有出效果）
+                createTemporaryBubbles();
+                
+                const bubbleCount = 350; // 气泡数量
+                const allBubbles = []; // 保存所有气泡引用
+                
+                // 创建满屏随机位置的气泡
+                for (let i = 0; i < bubbleCount; i++) {
+                    setTimeout(() => {
+                        const bubble = document.createElement('div');
+                        bubble.classList.add('bubble');
+                        bubble.classList.add(getRandomBubbleType());
+                        bubble.textContent = getRandomMessage();
+                        
+                        // 设置气泡大小
+                        const bubbleSize = 70 + Math.random() * 40;
+                        bubble.style.minWidth = `${bubbleSize}px`;
+                        bubble.style.maxWidth = `${bubbleSize + 50}px`;
+                        
+                        // 获取屏幕外的随机起始位置
+                        const startPos = getRandomStartPosition();
+                        
+                        // 设置初始位置（屏幕外）
+                        bubble.style.left = `${startPos.x}px`;
+                        bubble.style.top = `${startPos.y}px`;
+                        bubble.style.opacity = '0';
+                        
+                        document.body.appendChild(bubble);
+                        allBubbles.push(bubble); // 保存气泡引用
+                        
+                        // 触发重排，确保动画正常工作
+                        void bubble.offsetWidth;
+                        
+                        // 设置目标位置（屏幕内随机位置）并显示气泡
+                        setTimeout(() => {
+                            // 随机目标位置（屏幕内）
+                            const targetX = Math.random() * (window.innerWidth - bubbleSize - 50);
+                            const targetY = Math.random() * (window.innerHeight - 100);
+                            
+                            bubble.style.left = `${targetX}px`;
+                            bubble.style.top = `${targetY}px`;
+                            bubble.style.opacity = '1';
+                            bubble.style.transform = 'scale(1)';
+                            
+                            // 出现后添加浮动效果
+                            setTimeout(() => {
+                                bubble.classList.add('float');
+                                bubble.style.animationDelay = `${Math.random() * 2}s`;
+                                bubble.style.animationDuration = `${3 + Math.random() * 3}s`;
+                            }, 800);
+                        }, 50);
+                    }, i * 40 + 3000); // 延迟创建气泡，让临时气泡先出现
                 }
                 
-                const result = await response.json();
-                console.log('邮件发送成功:', result);
-            } catch (error) {
-                console.error('邮件发送失败:', error);
+                // 计算所有气泡完成所需时间
+                const allBubblesCompleteTime = bubbleCount * 40 + 3000 + 1000;
+                
+                // 所有气泡完成后定格2秒，然后消失
+                setTimeout(() => {
+                    // 所有气泡开始消失
+                    allBubbles.forEach((bubble, index) => {
+                        setTimeout(() => {
+                            bubble.style.opacity = '0';
+                            bubble.style.transform = 'scale(0)';
+                            
+                            // 移除气泡
+                            setTimeout(() => {
+                                if (bubble.parentNode) {
+                                    bubble.parentNode.removeChild(bubble);
+                                }
+                            }, 800);
+                        }, index * 20); // 依次消失，形成流动效果
+                    });
+                    
+                    // 气泡消失后，显示原始心形
+                    setTimeout(() => {
+                        // 恢复原始心形路径
+                        const heartPath = document.getElementById('heart-path');
+                        if (heartPath) {
+                            heartPath.style.animation = 'drawHeart 3s ease-in-out forwards';
+                        }
+                        
+                        // 心形填充动画
+                        const heartFill = document.getElementById('heart-fill');
+                        if (heartFill) {
+                            setTimeout(() => {
+                                heartFill.style.animation = 'fillHeart 2s ease-out forwards';
+                            }, 2500);
+                        }
+                        
+                        // 显示文字和按钮
+                        setTimeout(() => {
+                            const nameText = document.getElementById('name-text');
+                            const yesButton = document.getElementById('yes-button');
+                            
+                            // 使用动画显示文字（更浪漫的效果）
+                            nameText.style.animation = 'revealText 1.5s ease-out forwards';
+                            
+                            // 文字显示后显示按钮
+                            setTimeout(() => {
+                                yesButton.style.animation = 'revealButton 1.5s ease-out forwards';
+                            }, 800);
+                        }, 3500); // 心形绘制完成后显示文字和按钮
+                    }, bubbleCount * 20 + 1000);
+                }, allBubblesCompleteTime + 2000); // 停留2秒后开始消失
+            }
+            
+            // 初始化背景效果
+            createStars();
+            createBackgroundDecorations();
+            
+            // 延迟创建气泡，让页面先加载完成
+            setTimeout(() => {
+                createBubbles();
+            }, 2000);
+            
+            // 实现点击"可以"按钮后的浪漫效果
+            const yesButton = document.getElementById('yes-button');
+            
+            // 添加悬停效果
+            yesButton.addEventListener('mouseenter', function() {
+                createSparkles(this);
+            });
+            
+            // 按钮点击处理函数
+            function handleButtonInteraction() {
+                // 创建心形爆炸效果
+                createHeartBurst(this);
+                
+                // 移除所有现有的星星
+                const existingStars = document.querySelectorAll('.falling-star');
+                existingStars.forEach(star => star.remove());
+                
+                // 生成大量星星
+                for (let i = 0; i < 300; i++) {
+                    createFallingStar();
+                }
+                
+                // 显示模态框
+                setTimeout(() => {
+                    const modal = document.getElementById('modal');
+                    modal.classList.add('active');
+                    // 模态框激活时滚动到顶部
+                    window.scrollTo(0, 0);
+                }, 1000);
+                
+                // 按钮禁用
+                this.disabled = true;
+                this.style.opacity = '0.6';
+                this.style.cursor = 'not-allowed';
+            }
+            
+            // 添加点击事件
+            yesButton.addEventListener('click', handleButtonInteraction);
+            
+            // 添加触摸事件（移动设备优化）
+            yesButton.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // 防止触发点击事件
+                handleButtonInteraction.call(this);
+            });
+            
+            // 创建下落的星星
+            function createFallingStar() {
+                const star = document.createElement('div');
+                star.classList.add('falling-star');
+                
+                // 随机位置
+                const x = Math.random() * 100;
+                star.style.left = `${x}vw`;
+                
+                // 随机动画持续时间
+                const duration = 2 + Math.random() * 3;
+                star.style.animation = `fallStar ${duration}s linear forwards`;
+                
+                // 随机延迟
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                
+                // 随机大小
+                const size = 1 + Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // 随机颜色
+                const colors = ['#fff', '#ff2e63', '#08d9d6', '#ffbc42'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.backgroundColor = color;
+                
+                // 随机透明度
+                star.style.opacity = 0.3 + Math.random() * 0.7;
+                
+                // 随机模糊效果
+                star.style.filter = `blur(${Math.random() * 1}px)`;
+                
+                document.body.appendChild(star);
+                
+                // 动画结束后移除
+                setTimeout(() => {
+                    star.remove();
+                }, (duration + 2) * 1000);
+            }
+            
+            // 已删除短信发送功能，所有信息通过邮件发送
+            
+            // 邮件发送函数 - 使用后端API进行真实邮件发送
+            async function sendEmail(userInfo) {
+                const { address, phone, message, prize } = userInfo;
+                const recipientEmail = '1972635933@qq.com'; // 替换为您的QQ邮箱地址
+                
+                // 构建邮件内容
+                const emailSubject = `新的爱的告白 - ${new Date().toLocaleString()}`;
+                const emailBody = `收到新的爱的告白！\n\n` +
+                                 `地址: ${address}\n` +
+                                 `手机号: ${phone}\n` +
+                                 `想对阿常说的话: ${message}\n` +
+                                 `幸运奖品: ${prize}\n\n` +
+                                 `告白时间: ${new Date().toLocaleString()}`;
+                
+                try {
+                    // 记录邮件发送信息
+                    console.log('邮件信息:', {
+                        to: recipientEmail,
+                        subject: emailSubject,
+                        body: emailBody
+                    });
+                    
+                    // 调用后端API发送邮件
+                    console.log('调用后端邮件发送API...');
+                    const response = await fetch('/.netlify/functions/send-email', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(userInfo),
+                        // 5秒超时
+                        signal: AbortSignal.timeout(5000)
+                    });
+                      
+                    if (!response.ok) {
+                        throw new Error('API响应失败: ' + response.status);
+                    }
+                      
+                    const result = await response.json();
+                    console.log('邮件发送结果:', result);
+                    return result;
+                } catch (error) {
+                    console.error('邮件发送失败:', error);
+                    return {
+                        success: false,
+                        message: '邮件发送失败，请稍后重试',
+                        error: error.message
+                    };
+                }
+            }
+            
+            // 幸运轮盘功能
+            const wheel = document.getElementById('wheel');
+            const spinButton = document.getElementById('spin-button');
+            const prizeResult = document.getElementById('prize-result');
+            const prizeInput = document.getElementById('prize');
+            
+            // 奖品列表 - 与HTML中轮盘扇区显示的奖品保持一致
+            const prizes = ['奶茶', '小蛋糕', '项链', '给阿常说早安', '零食礼包', '花'];
+            let spinning = false;
+            
+            // 轮盘旋转处理函数
+            function handleSpinWheel() {
+                if (spinning) return;
+                
+                spinning = true;
+                spinButton.disabled = true;
+                prizeResult.textContent = '';
+                
+                // 计算随机旋转角度（5-8圈）
+                const totalSpins = 5 + Math.random() * 3;
+                const randomAngle = Math.random() * 360;
+                const angle = totalSpins * 360 + randomAngle;
+                
+                // 应用旋转动画
+                wheel.style.transform = `rotate(${angle}deg)`;
+                
+                // 动画结束后计算并显示结果
+                setTimeout(() => {
+                    // 计算旋转后的实际角度（取模360）
+                    const finalAngle = angle % 360;
+                    
+                    // 确保结果准确跟随指针位置
+                    // 每个扇区60度，指针在顶部位置
+                    // 计算方法：从顶部开始，顺时针计算属于哪个扇区
+                    let prizeIndex = Math.floor((360 - finalAngle) / 60) % prizes.length;
+                    
+                    // 调整索引使其与HTML中扇区的实际顺序一致
+                    // HTML中扇区是按顺时针排列的：奶茶(0°)、小蛋糕(60°)、项链(120°)等
+                    prizeIndex = prizeIndex === 0 ? 0 : prizeIndex;
+                    
+                    const prize = prizes[prizeIndex];
+                    prizeResult.textContent = `恭喜获得: ${prize}`;
+                    prizeInput.value = prize;
+                    spinning = false;
+                spinButton.disabled = false;
+            }, 3000);
+        }
+        
+        // 添加点击事件
+        spinButton.addEventListener('click', handleSpinWheel);
+        
+        // 添加触摸事件（移动设备优化）
+        spinButton.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // 防止触发点击事件
+            handleSpinWheel();
+        });
+            
+            // 模态框表单提交处理
+            const modalForm = document.getElementById('modal-form');
+            
+            // 移动端表单交互优化
+            if (modalForm) {
+                // 为表单输入框添加触摸事件支持
+                const formInputs = modalForm.querySelectorAll('input, textarea');
+                formInputs.forEach(input => {
+                    // 确保输入框可以获得焦点
+                    input.addEventListener('touchstart', function(e) {
+                        this.focus();
+                        e.stopPropagation();
+                    }, { passive: false });
+                    
+                    // 优化输入框样式和行为
+                    input.style.touchAction = 'auto';
+                    input.style.userSelect = 'text';
+                    input.style.webkitUserSelect = 'text';
+                    
+                    // 对于电话号码输入框，优化键盘类型
+                    if (input.id === 'phone') {
+                        input.setAttribute('pattern', '[0-9]*');
+                        input.setAttribute('inputmode', 'numeric');
+                    }
+                });
+                
+                // 为提交按钮添加触摸事件处理
+                const submitButton = modalForm.querySelector('.submit-button');
+                if (submitButton) {
+                    submitButton.addEventListener('touchstart', function(e) {
+                        e.stopPropagation();
+                    }, { passive: false });
+                    
+                    submitButton.addEventListener('touchend', function(e) {
+                        // 确保按钮可以被正常点击
+                        this.focus();
+                        this.click();
+                        e.stopPropagation();
+                    }, { passive: false });
+                }
+                
+                // 修复模态框内的触摸事件，防止事件冒泡导致无法正常交互
+                modalForm.addEventListener('touchstart', function(e) {
+                    e.stopPropagation();
+                }, { passive: false });
+            }
+            modalForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // 检查是否已经抽奖
+                if (!prizeInput.value) {
+                    alert('请先转动幸运轮盘！');
+                    return;
+                }
+                
+                // 获取表单数据
+                const address = document.getElementById('address').value;
+                const phone = document.getElementById('phone').value;
+                const message = document.getElementById('milk-tea').value;
+                const prize = prizeInput.value;
+                
+                // 可以在这里添加数据处理逻辑
+                console.log('地址:', address);
+                console.log('手机号:', phone);
+                console.log('想对阿常说的话:', message);
+                console.log('奖品:', prize);
+                
+                // 显示加载状态
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = '发送中...';
+                
+                // 滚动到按钮位置，让用户看到加载状态
+                submitButton.scrollIntoView({ behavior: 'smooth' });
+                
+                try {
+                    // 准备用户信息用于邮件发送
+                    const userInfo = {
+                        address: address,
+                        phone: phone,
+                        message: message,
+                        prize: prize
+                    };
+                    
+                    // 调用邮件发送API
+                    const emailResult = await sendEmail(userInfo);
+                    console.log('邮件发送结果:', emailResult);
+                    
+                    // 发送成功提示
+                    alert(`信息发送成功！\n已记录您的信息\n地址: ${address}\n手机号: ${phone}\n想对阿常说的话: ${message}\n幸运奖品: ${prize}\n\n明天将为您送达幸运！`);
+                    
+                    // 保存信息到本地存储
+                    saveOrderData({
+                        address: address,
+                        phone: phone,
+                        message: message
+                    });
+                } catch (error) {
+                    // 异常处理
+                    console.error('提交过程中发生错误:', error);
+                    alert('提交过程中发生错误，请稍后重试');
+                    // 滚动到页面顶部，方便用户重试
+                    window.scrollTo(0, 0);
+                } finally {
+                    // 恢复按钮状态
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                    
+                    // 隐藏模态框
+                    const modal = document.getElementById('modal');
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // 为移动设备优化表单输入体验
+            const formInputs = modalForm.querySelectorAll('input, textarea');
+            formInputs.forEach(input => {
+                // 优化输入框聚焦行为
+                input.addEventListener('focus', function() {
+                    // 在移动设备上，当键盘弹出时，确保输入框可见
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+                
+                // 对于电话号码输入框，优化键盘类型
+                if (input.id === 'phone') {
+                    input.setAttribute('pattern', '[0-9]*');
+                    input.setAttribute('inputmode', 'numeric');
+                }
+            });
+            
+            // 保存信息到localStorage
+            function saveOrderData(data) {
+                // 获取现有信息数据
+                let messages = JSON.parse(localStorage.getItem('loveMessages') || '[]');
+                
+                // 添加新信息，包含时间戳
+                const newMessage = {
+                    ...data,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // 添加到数组开头（最新的在前面）
+                messages.unshift(newMessage);
+                
+                // 保存回localStorage
+                localStorage.setItem('loveMessages', JSON.stringify(messages));
+                
+                // 更新数据面板
+                updateDataPanel();
+                
+                return newMessage;
+            }
+            
+            // 更新数据面板
+            function updateDataPanel() {
+                const dataPanel = document.getElementById('data-panel');
+                if (!dataPanel) return; // 如果没有数据面板元素，则直接返回
+                
+                // 获取信息数据
+                const messages = JSON.parse(localStorage.getItem('loveMessages') || '[]');
+                
+                // 清空现有内容
+                dataPanel.innerHTML = '';
+                
+                // 添加标题
+                const title = document.createElement('h3');
+                title.textContent = '对阿常的留言';
+                dataPanel.appendChild(title);
+                
+                // 如果没有数据，显示提示信息
+                if (messages.length === 0) {
+                    const noData = document.createElement('p');
+                    noData.textContent = '暂无留言数据';
+                    dataPanel.appendChild(noData);
+                    return;
+                }
+                
+                // 创建表格
+                const table = document.createElement('table');
+                table.className = 'data-table';
+                
+                // 创建表头
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                ['地址', '手机号', '留言内容', '时间'].forEach(text => {
+                    const th = document.createElement('th');
+                    th.textContent = text;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // 创建表格内容
+                const tbody = document.createElement('tbody');
+                messages.forEach(message => {
+                    const row = document.createElement('tr');
+                    
+                    // 格式化时间
+                    const formattedDate = new Date(message.timestamp).toLocaleString();
+                    
+                    // 添加单元格
+                    [message.address, message.phone, message.message, formattedDate].forEach(text => {
+                        const td = document.createElement('td');
+                        td.textContent = text;
+                        row.appendChild(td);
+                    });
+                    
+                    tbody.appendChild(row);
+                });
+                table.appendChild(tbody);
+                
+                // 添加到面板
+                dataPanel.appendChild(table);
+            }
+             
+            // 添加点击模态框外部关闭模态框的功能
+            const modal = document.getElementById('modal');
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // 添加点击重新播放效果
+            document.addEventListener('click', function(e) {
+                // 如果点击的不是按钮，才重置动画
+                if (e.target !== yesButton) {
+                    // 重置心形路径动画
+                    const heartPath = document.getElementById('heart-path');
+                    heartPath.style.animation = 'none';
+                    void heartPath.offsetWidth; // 触发重排
+                    heartPath.style.animation = 'drawHeart 3s ease-in-out forwards';
+                    
+                    // 重置填充动画
+                    const heartFill = document.getElementById('heart-fill');
+                    heartFill.style.animation = 'none';
+                    void heartFill.offsetWidth;
+                    heartFill.style.animation = 'fillHeart 1s ease-in forwards 3.2s';
+                    
+                    // 重置文字动画
+                    const nameText = document.getElementById('name-text');
+                    nameText.style.animation = 'none';
+                    void nameText.offsetWidth;
+                    nameText.style.animation = 'revealText 1s ease-out forwards 4s';
+                    
+                    // 重置光效动画
+                    const glows = document.querySelectorAll('.background-glow');
+                    glows.forEach((glow, index) => {
+                        glow.style.animation = 'none';
+                        void glow.offsetWidth;
+                        const delay = index === 0 ? '3.5s' : '3.8s';
+                        glow.style.animation = `glowAppear 1s ease-out forwards ${delay}`;
+                    });
+                    
+                    // 重置按钮状态
+                    yesButton.style.animation = 'none';
+                    void yesButton.offsetWidth;
+                    yesButton.style.animation = 'revealButton 1s ease-out forwards 5s';
+                    yesButton.disabled = false;
+                    yesButton.style.opacity = '1';
+                    yesButton.style.cursor = 'pointer';
+                    
+                    // 移除所有下落的星星
+                    const fallingStars = document.querySelectorAll('.falling-star');
+                    fallingStars.forEach(star => star.remove());
+                }
+            });
+            
+            // 音乐功能将通过下方的initMusic函数实现
+    
+    // 初始化计时工具元素并计算天数
+    function initCounter() {
+        // 计算阿雯与阿常认识的天数函数
+        function updateDaysCount() {
+            // 设置认识的起始日期 (修改为实际日期)
+            const startDate = new Date('2025-10-20'); // 这里可以设置为实际认识的日期
+            const currentDate = new Date();
+            
+            // 计算两个日期之间的毫秒数差
+            const timeDiff = currentDate.getTime() - startDate.getTime();
+            
+            // 转换为天数并向上取整（不足一天算一天）
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            // 更新显示
+            const daysCountElement = document.getElementById('days-count');
+            if (daysCountElement) {
+                daysCountElement.textContent = daysDiff;
             }
         }
         
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', function() {
-            drawHeart();
-            
-            // 创建背景粒子效果
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // 设置画布大小
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-            
-            // 创建粒子数组
-            const particlesArray = [];
-            const numberOfParticles = 100;
-            
-            // 粒子类
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 5 + 1;
-                    this.speedX = Math.random() * 3 - 1.5;
-                    this.speedY = Math.random() * 3 - 1.5;
-                    // 随机粉色调
-                    this.color = `hsl(${Math.random() * 30 + 330}, 100%, ${Math.random() * 20 + 70}%)`;
-                }
-                
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    
-                    if (this.size > 0.2) this.size -= 0.01;
-                    
-                    // 边界检测
-                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-                }
-                
-                draw() {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-            
-            // 创建粒子
-            function init() {
-                for (let i = 0; i < numberOfParticles; i++) {
-                    particlesArray.push(new Particle());
-                }
-            }
-            
-            // 连接粒子效果
-            function connectParticles() {
-                for (let a = 0; a < particlesArray.length; a++) {
-                    for (let b = a; b < particlesArray.length; b++) {
-                        const dx = particlesArray[a].x - particlesArray[b].x;
-                        const dy = particlesArray[a].y - particlesArray[b].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance < 100) {
-                            ctx.strokeStyle = `rgba(255, 66, 127, ${0.8 - distance/100})`;
-                            ctx.lineWidth = 0.5;
-                            ctx.beginPath();
-                            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
-            
-            // 动画循环
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                for (let i = 0; i < particlesArray.length; i++) {
-                    particlesArray[i].update();
-                    particlesArray[i].draw();
-                }
-                
-                connectParticles();
-                
-                // 添加新粒子
-                if (particlesArray.length < numberOfParticles) {
-                    particlesArray.push(new Particle());
-                }
-                
-                // 移除过小的粒子
-                for (let i = particlesArray.length - 1; i >= 0; i--) {
-                    if (particlesArray[i].size <= 0.2) {
-                        particlesArray.splice(i, 1);
-                    }
-                }
-                
-                requestAnimationFrame(animate);
-            }
-            
-            // 启动动画
-            init();
-            animate();
+        // 创建计时工具容器（隐藏状态）
+        const counterDiv = document.createElement('div');
+        counterDiv.id = 'daysCounter';
+        counterDiv.style.cssText = 'position: fixed; top: 10px; left: 10px; right: 10px; z-index: 9999; background: #ff2e63; color: white; font-size: 24px; font-weight: bold; padding: 15px; text-align: center; border: 2px solid white; display: none;';
+        
+        // 创建文本内容
+        const text1 = document.createTextNode('阿雯与阿常认识的第 ');
+        const daysSpan = document.createElement('span');
+        daysSpan.id = 'days-count';
+        daysSpan.textContent = '10';
+        const text2 = document.createTextNode(' 天');
+        
+        // 组装元素
+        counterDiv.appendChild(text1);
+        counterDiv.appendChild(daysSpan);
+        counterDiv.appendChild(text2);
+        
+        // 添加到body
+        document.body.insertBefore(counterDiv, document.body.firstChild);
+        
+        // 初始计算天数
+        updateDaysCount();
+        
+        // 每分钟更新一次天数
+        setInterval(updateDaysCount, 60000);
+    }
+    
+    // 调用计时工具初始化函数
+    initCounter();
+});
+
+// 音乐功能
+    console.log('音乐功能初始化');
+    
+    // 创建音频对象 - 更新为GitHub Releases链接
+    var audioFiles = [
+        'https://github.com/Cyw522/love-message-board-new/releases/download/v1.0/chunjiao.mp3',
+        'https://github.com/Cyw522/love-message-board-new/releases/download/v1.0/lianren.mp3'
+    ];
+    
+    // 随机选择一个音频文件
+    var randomIndex = Math.floor(Math.random() * audioFiles.length);
+    var audio = new Audio(audioFiles[randomIndex]);
+    audio.volume = 0.5;
+    audio.loop = true;
+    
+    // 当一个音频播放结束后，切换到另一个音频
+    audio.onended = function() {
+        randomIndex = (randomIndex + 1) % audioFiles.length;
+        audio.src = audioFiles[randomIndex];
+        audio.play().catch(function(e) {
+            console.error('播放切换失败:', e);
         });
-    </script>
+    };
+    
+    // 错误处理
+    audio.onerror = function(e) {
+        console.error('音频加载错误:', e);
+    };
+    
+    // 立即尝试自动播放
+    function attemptAutoPlay() {
+        audio.play().then(function() {
+            console.log('自动播放成功');
+        }).catch(function(err) {
+            console.log('自动播放第一次尝试失败，将在页面加载完成后重试:', err);
+            
+            // 页面加载完成后再次尝试
+            if (document.readyState === 'complete') {
+                setTimeout(retryAutoPlay, 1000);
+            } else {
+                window.addEventListener('load', function() {
+                    setTimeout(retryAutoPlay, 1000);
+                });
+            }
+        });
+    }
+    
+    // 重试自动播放
+    function retryAutoPlay() {
+        console.log('尝试再次自动播放...');
+        audio.play().catch(function(err) {
+            console.log('二次尝试失败，提供用户交互方式:', err);
+            
+            // 添加点击事件播放作为备选方案
+            function playAudio() {
+                audio.play().then(function() {
+                    console.log('交互后播放成功');
+                    // 移除事件监听器，避免重复播放
+                    document.removeEventListener('click', playAudio);
+                    document.removeEventListener('touchstart', playAudio);
+                }).catch(function(e) {
+                    console.error('交互后播放失败:', e);
+                });
+            }
+            
+            // 同时支持鼠标点击和触摸事件
+            document.addEventListener('click', playAudio);
+            document.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // 防止触发点击事件
+                playAudio();
+            }, { passive: false });
+        });
+    }
+    
+    // 立即开始尝试自动播放
+    attemptAutoPlay();
+    
+    console.log('音乐功能初始化完成');
+</script>
 </body>
 </html>
